@@ -13,15 +13,15 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-TextEditingController emailcontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
 
-TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
 
-String email = '', password = '';
+  String email = '', password = '';
 
-final _formkey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
 
-bool showSpinner =false;
+  bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +31,16 @@ bool showSpinner =false;
         appBar: AppBar(
           title: Text('Sign Up Form'),
         ),
-            body: Column(
-              children: [
-                Text("Form"),
-                SizedBox(height: 20,),
-                Form(
-                  key: _formkey,
-                    child: Column(
-                    children: [
+        body: Column(
+          children: [
+            Text("Form"),
+            SizedBox(
+              height: 20,
+            ),
+            Form(
+                key: _formkey,
+                child: Column(
+                  children: [
                     TextFormField(
                       controller: emailcontroller,
                       keyboardType: TextInputType.emailAddress,
@@ -46,71 +48,73 @@ bool showSpinner =false;
                         hintText: "Enter Email",
                         prefix: Icon(Icons.email),
                       ),
-                      onChanged: (String value){
+                      onChanged: (String value) {
                         email = value;
                       },
-                      validator: (value){
-                        return value!.isEmpty ? "Enter the Email" :null;
+                      validator: (value) {
+                        return value!.isEmpty ? "Enter the Email" : null;
                       },
-
-
                     ),
-                      SizedBox(height: 20,),
-                      TextFormField(
-                        controller: passwordcontroller,
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: true,
-                        decoration: InputDecoration(
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      controller: passwordcontroller,
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: true,
+                      decoration: InputDecoration(
                           hintText: "Enter Password",
                           prefix: Icon(Icons.lock),
-                          border: OutlineInputBorder()
-                        ),
-                        onChanged: (String value){
-                          password = value;
-                        },
-                        validator: (value){
-                          return value!.isEmpty ? "Enter the Email" :null;
-                        },
-
-
-                      ),
-                      SizedBox(height: 20,),
-                      RoundButton(title: "Register", onPress: () async{
-                        if(_formkey.currentState!.validate()){
-                          setState(() {
-                            showSpinner =true;
-                          });
-                          try{
-                            final user = await _auth.createUserWithEmailAndPassword(email:email.toString().trim(),password:password.toString().trim());
-                            if(user!= null){
-                              print("Success");
-                              toastMassage("User Create");
+                          border: OutlineInputBorder()),
+                      onChanged: (String value) {
+                        password = value;
+                      },
+                      validator: (value) {
+                        return value!.isEmpty ? "Enter the Email" : null;
+                        
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RoundButton(
+                        title: "Register",
+                        onPress: () async {
+                          if (_formkey.currentState!.validate()) {
+                            setState(() {
+                              showSpinner = true;
+                            });
+                            try {
+                              final user =
+                                  await _auth.createUserWithEmailAndPassword(
+                                      email: emailcontroller.toString().trim(),
+                                      password:
+                                          passwordcontroller.toString().trim());
+                              if (user != null) {
+                                // print("Success");
+                                toastMassage("User Create");
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                              }
+                            } catch (e) {
+                              print(e.toString());
+                              toastMassage(e.toString());
                               setState(() {
-                                showSpinner =false;
+                                showSpinner = false;
                               });
                             }
-
                           }
-                          catch(e){
-                            print(e.toString());
-                            toastMassage(e.toString());
-                            setState(() {
-                              showSpinner =false;
-                            });
-                          }
-                        }
-                      })
+                        })
                   ],
                 ))
-              ],
-
-      ),
-
+          ],
+        ),
       ),
     );
-
   }
-  void toastMassage(massage ) {
+
+  void toastMassage(massage) {
     Fluttertoast.showToast(
         msg: massage.toString(),
         toastLength: Toast.LENGTH_SHORT,
@@ -118,7 +122,6 @@ bool showSpinner =false;
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
   }
 }
